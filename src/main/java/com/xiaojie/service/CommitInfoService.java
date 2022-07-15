@@ -9,7 +9,7 @@ public interface CommitInfoService {
     
     public void  save(CodeCommitRecord commitInfo);
     
-    Integer deteleByCommitTime(Date startCommitTime, Date endCommitTime);
+    Integer deteleByTaskExecutionTime(String taskExecutionTime);
 
     
 }

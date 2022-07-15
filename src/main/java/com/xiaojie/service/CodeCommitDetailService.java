@@ -9,5 +9,5 @@ public interface CodeCommitDetailService {
 
     public void  save(CodeCommitDetail codeCommitDetail) ;
     
-    Integer deteleByCommitTime(Date startCommitTime, Date endCommitTime);
+    Integer deteleByTaskExecutionTime(String taskExecutionTime);
 }

@@ -23,8 +23,8 @@ public class CommitInfoServiceImpl implements CommitInfoService {
 
 
     @Override
-    public Integer deteleByCommitTime(Date startCommitTime, Date endCommitTime) {
-        return commitInfoMapper.deleteByCommitTime(startCommitTime, endCommitTime);
+    public Integer deteleByTaskExecutionTime(String taskExecutionTime) {
+        return commitInfoMapper.deleteByTaskExecutionTime(taskExecutionTime);
     }
         
 

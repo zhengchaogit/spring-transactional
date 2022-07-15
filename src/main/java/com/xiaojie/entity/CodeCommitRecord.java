@@ -19,5 +19,6 @@ public class CodeCommitRecord  implements Serializable{
     private Integer userId;//用户id
     private String userName;//用户姓名
     private Date commitTime;//提交时间
+    private String taskExecutionTime;//任务执行时间
     
 }

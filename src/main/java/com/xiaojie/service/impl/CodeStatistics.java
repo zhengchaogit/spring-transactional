@@ -58,8 +58,9 @@ public class CodeStatistics {
      *
      */
 //    @Scheduled(cron = "0 */1 * * * ?")
-//    public void executeJob(String taskExecutionTime){
-//        task(taskExecutionTime);
+//    public void executeJob(){
+//        String  taskExecutionTime = new SimpleDateFormat("yyyy-MM-dd").format(new Date()).toString();
+//        task(taskExecutionTime,0);
 //    }
     
     /**
@@ -184,12 +185,10 @@ public class CodeStatistics {
                         if(CollectionUtils.isEmpty(commits)||commits.size()==0) {
                             continue;
                         }
-                        DateTime startCommitTime = DateUtil.beginOfDay(new Date());
-                        DateTime endCommitTime = DateUtil.endOfDay(new Date());
                         //删除当天代码提交记录表
-                        commitInfoService.deteleByCommitTime(startCommitTime, endCommitTime);
+                        commitInfoService.deteleByTaskExecutionTime(taskExecutionTime);
                         //删除当天代码提交明细
-                        codeCommitDetailService.deteleByCommitTime(startCommitTime, endCommitTime);
+                        codeCommitDetailService.deteleByTaskExecutionTime(taskExecutionTime);
                         //删除记录
                         for(Commit commit : commits) {
                             log.info("commitId:"+commit.getId());
@@ -207,6 +206,7 @@ public class CodeStatistics {
                             commitRecord.setCommitBranchName(branchName);
                             commitRecord.setCodeCommitTitle(userommit.getTitle());
                             commitRecord.setCommitTime(new Date());
+                            commitRecord.setTaskExecutionTime(taskExecutionTime);
                             commitRecord.setProjectId(userProject.getId().intValue());
                             commitRecord.setProjectName(userProject.getName());
                             commitRecord.setUserId(userInfo.getId());
@@ -223,6 +223,7 @@ public class CodeStatistics {
                                 codeCommitDetail = new CodeCommitDetail();
                                 codeCommitDetail.setCodeCommitId(commitRecord.getId());
                                 codeCommitDetail.setCodeCommitContent(diff.getDiff());
+                                codeCommitDetail.setTaskExecutionTime(taskExecutionTime);
                                 codeCommitDetail.setCommitTime(new Date());
                                 codeCommitDetailService.save(codeCommitDetail);
                             }

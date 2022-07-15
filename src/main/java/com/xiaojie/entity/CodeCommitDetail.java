@@ -12,4 +12,5 @@ public class CodeCommitDetail implements Serializable{
     private Integer codeCommitId;//代码提交id
     private String codeCommitContent;//提交内容差异对比
     private Date commitTime;//提交时间
+    private String taskExecutionTime;//任务执行时间
 }

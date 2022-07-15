@@ -22,8 +22,8 @@ public class CodeCommitDetailServiceImpl implements CodeCommitDetailService{
     }
 
     @Override
-    public Integer deteleByCommitTime(Date startCommitTime, Date endCommitTime) {
-       return codeCommitDetailMapper.deleteByCommitTime(startCommitTime, endCommitTime);
+    public Integer deteleByTaskExecutionTime(String taskExecutionTime) {
+       return codeCommitDetailMapper.deleteByTaskExecutionTime(taskExecutionTime);
         
     }
     

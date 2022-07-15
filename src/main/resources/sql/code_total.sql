@@ -24,29 +24,29 @@ CREATE TABLE `project_info` (
 
 
 CREATE TABLE `code_commit_record` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `code_commit_title` text NOT NULL COMMENT '提交标题',
-  `code_commit_total` int NOT NULL COMMENT '总提交量',
-  `code_commit_additions` int NOT NULL COMMENT '代码增加量',
-  `code_commit_deletions` int NOT NULL COMMENT '代码删除量',
-  `commit_branch_name` varchar(10) NOT NULL COMMENT '提交分支名称',
-  `project_id` int NOT NULL COMMENT '项目id',
-  `project_name` varchar(64) NOT NULL COMMENT '项目名称',
-  `user_id` int NOT NULL COMMENT '用户id',
-  `user_name` varchar(64) NOT NULL COMMENT '用户姓名',
-  `commit_time` datetime DEFAULT NULL COMMENT '提交时间',
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `code_commit_title` TEXT NOT NULL COMMENT '提交标题',
+  `code_commit_total` INT NOT NULL COMMENT '总提交量',
+  `code_commit_additions` INT NOT NULL COMMENT '代码增加量',
+  `code_commit_deletions` INT NOT NULL COMMENT '代码删除量',
+  `commit_branch_name` VARCHAR(10) NOT NULL COMMENT '提交分支名称',
+  `project_id` INT NOT NULL COMMENT '项目id',
+  `project_name` VARCHAR(64) NOT NULL COMMENT '项目名称',
+  `user_id` INT NOT NULL COMMENT '用户id',
+  `user_name` VARCHAR(64) NOT NULL COMMENT '用户姓名',
+  `task_execution_time` VARCHAR(10) NOT NULL COMMENT '执行任务时间',
+  `commit_time` DATETIME DEFAULT NULL COMMENT '提交时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb3 COMMENT='代码提交记录表';
-
+) ENGINE=INNODB  DEFAULT CHARSET=utf8mb3 COMMENT='代码提交记录表';
 
 CREATE TABLE `code_commit_detail` (
-  `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
-  `code_commit_id` int NOT NULL COMMENT '代码提交id',
-  `code_commit_content` text NOT NULL COMMENT '提交内容差异对比',
-  `commit_time` datetime DEFAULT NULL COMMENT '提交时间',
+  `id` INT NOT NULL AUTO_INCREMENT COMMENT 'id',
+  `code_commit_id` INT NOT NULL COMMENT '代码提交id',
+  `task_execution_time` VARCHAR(10) NOT NULL COMMENT '执行任务时间',
+  `code_commit_content` TEXT NOT NULL COMMENT '提交内容差异对比',
+  `commit_time` DATETIME DEFAULT NULL COMMENT '提交时间',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8mb3 COMMENT='代码提交明细表';
-
+) ENGINE=INNODB  DEFAULT CHARSET=utf8mb3 COMMENT='代码提交明细表';
 
 CREATE TABLE `code_statistics_task` (
   `id` int NOT NULL AUTO_INCREMENT COMMENT 'id',
