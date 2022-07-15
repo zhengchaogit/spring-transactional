@@ -1,0 +1,73 @@
+# 共有8个级别，按照从低到高为：ALL < TRACE < DEBUG < INFO < WARN < ERROR < FATAL < OFF。
+# %d{HH:mm:ss.SSS} 表示输出到毫秒的时间
+# %t              输出当前线程名称
+# %-5level        输出日志级别，-5表示左对齐并且固定输出5个字符，如果不足在右边补0
+# %logger         输出logger名称，因为Root Logger没有名称，所以没有输出
+# %msg            日志文本
+# %n              换行
+# %F              输出所在的类文件名，如Client.java
+# %L              输出行号
+# %M              输出所在方法名
+# %l              输出语句所在的行数, 包括类名、方法名、文件名、行数
+Configuration:
+  status: warn
+  monitorInterval: 30
+
+  Properties: # 定义全局变量
+    Property: # 缺省配置（用于开发环境）。其他环境需要在VM参数中指定，如下： 设置指定包下的日志级别
+      #测试：-D log.level.console=warn -D log.level.xjj=trace
+      #生产：-D log.level.console=warn -D log.level.xjj=info
+      #- name: log.level.xjj=trace
+      - name: log.level.console
+        value: DEBUG
+      - name: log.path
+        value: ./logs
+      - name: project.name
+        value: jjz-admin-api
+      - name: log.pattern
+        value: "%d{yyyy-MM-dd HH:mm:ss.SSS} -%5p ${PID:-} [%15.15t] %-30.30C{1.} : %m%n"
+
+  Appenders:
+    Console:  #输出到控制台
+      name: CONSOLE
+      target: SYSTEM_OUT
+      PatternLayout:
+        pattern: ${log.pattern}
+    #   启动日志
+    RollingFile:
+      - name: ROLLING_FILE
+        fileName: ${log.path}/${project.name}.log
+        filePattern: "${log.path}/historyRunLog/$${date:yyyy-MM}/${project.name}-%d{yyyy-MM-dd}-%i.log.gz"
+        filePermissions: rw-r--r--
+        PatternLayout:
+          pattern: ${log.pattern}
+        Filters:
+          #        一定要先去除不接受的日志级别，然后获取需要接受的日志级别  不接受DEBUG 和 TRACE 级别的日志
+          ThresholdFilter:
+            - level: INFO
+              onMatch: NEUTRAL
+              onMismatch: NEUTRAL
+        Policies:
+          # SizeBasedTriggeringPolicy:  按大小分类
+          #            size: "128 MB"
+          TimeBasedTriggeringPolicy:  # 按天分类
+            modulate: true
+            interval: 1
+        DefaultRolloverStrategy:     # 文件最多100个
+          max: 100
+
+  Loggers:
+    Root:
+      # 输出日志级别在这里调整 , 另外再调整上边的 filters 的接收日志级别
+      level: INFO
+      AppenderRef:
+        - ref: CONSOLE
+        - ref: ROLLING_FILE
+#    监听具体包下面的日志
+#    Logger: # 为com.xjj包配置特殊的Log级别，方便调试
+#      - name: com.xjj
+#        additivity: false
+#        level: ${sys:log.level.xjj}
+#        AppenderRef:
+#          - ref: CONSOLE
+#          - ref: ROLLING_FILE

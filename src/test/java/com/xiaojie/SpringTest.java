@@ -1,131 +1,200 @@
 package com.xiaojie;
 
-import java.util.Random;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
-import org.junit.Assert;
+import org.apache.http.client.ClientProtocolException;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.context.ApplicationContext;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.xiaojie.check.TranInvalidCaseWithoutInjectSpring;
-import com.xiaojie.service.OrderService;
-import com.xiaojie.service.check.TranInvalidCaseByCallMethodSelf;
-import com.xiaojie.service.check.TranInvalidCaseByThrowCheckException;
-import com.xiaojie.service.check.TranInvalidCaseWithCatchException;
-import com.xiaojie.service.check.TranInvalidCaseWithFinalAndStaticMethod;
-import com.xiaojie.service.check.TranInvalidCaseWithMultThread;
+import com.alibaba.fastjson.JSON;
+import com.xiaojie.gitlab.api.GitlabAPI;
+import com.xiaojie.gitlab.api.models.GitlabIssue;
+import com.xiaojie.gitlab.api.models.GitlabProject;
+import com.xiaojie.gitlab4j.api.Constants.ProjectOrderBy;
+import com.xiaojie.gitlab4j.api.Constants.SortOrder;
+import com.xiaojie.gitlab4j.api.GitLabApi;
+import com.xiaojie.gitlab4j.api.GitLabApiException;
+import com.xiaojie.gitlab4j.api.models.Branch;
+import com.xiaojie.gitlab4j.api.models.Commit;
+import com.xiaojie.gitlab4j.api.models.Diff;
+import com.xiaojie.gitlab4j.api.models.Project;
+import com.xiaojie.service.impl.CodeStatistics;
+import com.xiaojie.util.HttpClientUtil;
+import com.xiaojie.util.Transform;
 
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = App.class)
 public class SpringTest {
 
-    @Autowired
-    private OrderService orderService;
     
     @Autowired
-    private TranInvalidCaseByThrowCheckException tranInvalidCaseByThrowCheckException;
+    private CodeStatistics codeStatistics;
     
     
-    @Autowired
-    private TranInvalidCaseWithCatchException tranInvalidCaseWithCatchException;
+//    @Test
+//    public void getGroupProjects(){
+//
+//        GitlabAPI gitlabAPIIgnoreSSL=GitlabAPI.connect("https://gitlab.com","glpat-ojqGLt-SqynCymmyMkx4");
+//        gitlabAPIIgnoreSSL.ignoreCertificateErrors(true);
+//        GitlabGroup group =new GitlabGroup();
+//        group.setId(id);
+//        try {
+//            List<GitlabIssue> listIssues=gitlabAPIIgnoreSSL.getGroupProjects(group);
+//            System.out.println("List of issues: "+listIssues.size());
+//            Transform.GitlabIssueToXMLYoutrack(listIssues);
+//
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//        vtranInvalidCaseWithCatchException.add();
+//    }
+    
+//    @Test
+    public void createProject(){
 
-    
-    @Autowired
-    private ApplicationContext applicationContext;
-    
-    @Autowired
-    private TranInvalidCaseByCallMethodSelf tranInvalidCaseByCallMethodSelf;
-    
-    
-    @Autowired
-    private TranInvalidCaseWithMultThread tranInvalidCaseWithMultThread;
-    /**
-     * 场景一：service没有托管给spring.
-     * 原因：spring事务生效的前提是，service必须是一个bean对象
-     * 解决方案：将service注入spring
-     * errorFlag：0：有异常 1：无异常
-     * 总结：有自定义事务注解（@MyTransactional）的service必须创建在定义切入点包含的路径下，并且service必须托管给spring管理，这样事务才会生效
-     * 
-     */
-//    @Test
-    public void testServiceWithoutInjectSpring(){
-        int errorFlag = 0;
-        //1.此类没有被spring托管   2.此类下自定义事务注解没有创建在定义切入点包含的路径下
-        TranInvalidCaseWithoutInjectSpring tranInvalidCaseWithoutInjectSpring = new TranInvalidCaseWithoutInjectSpring(orderService);
-        boolean isSuccess = tranInvalidCaseWithoutInjectSpring.add(errorFlag);
-        Assert.assertTrue(isSuccess);
+        GitlabAPI gitlabAPIIgnoreSSL=GitlabAPI.connect("https://gitlab.com","glpat-ZUQgxZdzqBNnvhr8YW6n");
+        gitlabAPIIgnoreSSL.ignoreCertificateErrors(true);
+        try {
+            GitlabProject project = new GitlabProject();
+            gitlabAPIIgnoreSSL.createProject("232323");
+            System.out.println("getAllProjects");
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("getAllProjects: "+e.getMessage());
+        }catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("getAllProjects: "+e.getMessage());
+        }
     }
     
-    /**
-     * 场景二：针对受检异常事务是否回滚
-     * 总结：声明式事务注解@Transactional：spring默认只会回滚非检查异常和error异常        自定义事务注解：针对所有异常进行回滚
-     */
 //    @Test
-    public void testThrowCheckException() throws Exception{
-        tranInvalidCaseByThrowCheckException.add();
+    public void getAllProjects(){
 
+        GitlabAPI gitlabAPIIgnoreSSL=GitlabAPI.connect("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+        gitlabAPIIgnoreSSL.ignoreCertificateErrors(true);
+        try {
+            GitlabProject project = new GitlabProject();
+            List<GitlabProject> pdsfdsf = gitlabAPIIgnoreSSL.getAllProjects();
+            System.out.println("getAllProjects"+pdsfdsf.size());
+        } catch (IOException e) {
+            e.printStackTrace();
+            System.out.println("getAllProjects: "+e.getMessage());
+        }catch(Exception e) {
+            e.printStackTrace();
+            System.out.println("getAllProjects: "+e.getMessage());
+        }
     }
     
-    /**
-     * 场景三：业务自己捕获了异常
-     * 原因：才能进行后续的处理，如果业务自己捕获了异常，则事务无法感知
-     * 总结： 自定义事务注解异常捕获后事务失效
-     */
-//    @Test
-    public void testCatchExecption() throws Exception{
-        tranInvalidCaseWithCatchException.add();
+//  @Test
+  public void getUsers(){
+      String result = "";
+      try {
+        Map<String, String> params = new HashMap<String, String>();
+        params.put("PRIVATE-TOKEN", "glpat-oC9YFEF3MzoZJiUvnek3");
+        params.put("accept", "application/json");
+        //result = HttpClientUtil.doGet("https://gitlab.com/api/v4/metadata");
+        result = HttpClientUtil.doGet("http://35.185.44.232/api/v4/metadata");
+        // http://35.185.44.232/api/v4/metadata
+        System.out.println(result);
+    } catch (ClientProtocolException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    } catch (IOException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
-    
-    
-    /**
-     * 场景四：方法用final修饰
-     * 原因：因为spring事务是用动态代理实现，因此如果方法使用了final修饰，则代理类无法对目标方法进行重写，植入事务功能
-     * 解决方案：方法不要用final修饰
-     * 总结： 自定义事务注解方法用final修饰事务失效
-     *
-     */
-//    @Test
-    public void testFinal() {
-        TranInvalidCaseWithFinalAndStaticMethod tranInvalidCaseWithFinalAndStaticMethod = applicationContext.getBean(TranInvalidCaseWithFinalAndStaticMethod.class);
-        OrderService orderService = applicationContext.getBean(OrderService.class);
-        tranInvalidCaseWithFinalAndStaticMethod.add(orderService);
+      
+  }
+//第二步，获取当前用户可见的所有项目（即使用户不是成员）1
+//  @Test
+  public void test() {
+      try {
+          //https://gitlab.com/api/v4/projects?private_token=glpat-N3VJDTyNbzqCcuGxVa-m&membership=true
+          GitLabApi gitLabApi = new GitLabApi("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+          List<Project> a = gitLabApi.getProjectApi().getProjects(false,null,ProjectOrderBy.ID,SortOrder.DESC,null,false,false,true,false,false);
+          System.out.println(a.size());
+          System.out.println(JSON.toJSONString(a));
+          for(int i=0;i<a.size();i++) {
+              System.out.println(a.get(i).getId());
+          }
+    } catch (GitLabApiException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
-    
-    /**
-     * 场景五：方法用static修饰
-     * 原因：因为spring事务是用动态代理实现，因此如果方法使用了static修饰，则代理类无法对目标方法进行重写，植入事务功能
-     * 解决方案：方法不要用final修饰
-     * 总结： 自定义事务注解方法用static修饰事务失效
-     *
-     */
-//    @Test
-    public void testStatic() {
-        TranInvalidCaseWithFinalAndStaticMethod tranInvalidCaseWithFinalAndStaticMethod = applicationContext.getBean(TranInvalidCaseWithFinalAndStaticMethod.class);
-        OrderService orderService = applicationContext.getBean(OrderService.class);
-        tranInvalidCaseWithFinalAndStaticMethod.add(orderService);
+  }
+  
+  //第三步，遍历项目，根据项目id获取分支列表2
+//  @Test
+  public void project() {
+      //https://gitlab.com/api/v4/projects/37620666/repository/branches?private_token=glpat-N3VJDTyNbzqCcuGxVa-m
+      try {
+          GitLabApi gitLabApi = new GitLabApi("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+          List<Branch> a = gitLabApi.getRepositoryApi().getBranches("37620666");
+          System.out.println(JSON.toJSONString(a));
+          System.out.println(a.size());
+          for(int i=0;i<a.size();i++) {
+              System.out.println(a.get(i).getName());
+          }
+    } catch (GitLabApiException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
-    
-    /**
-     * 场景六：调用本类方法
-     * 原因：本类方法不经过代理，无法进行增强
-     * 总结： 自定义事务注解方法调用本类方法事务失效
-     */
-//    @Test
-    public void testCallMethodBySelf() {
-        tranInvalidCaseByCallMethodSelf.save();
+  }
+  //第四步，遍历分支，根据分支name获取commits3
+//  @Test
+  public void commit1() {
+      //https://gitlab.com/api/v4/projects/37620666/repository/commits?ref_name=main&private_token=glpat-N3VJDTyNbzqCcuGxVa-m
+      try {
+          GitLabApi gitLabApi = new GitLabApi("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+          List<Commit> a = gitLabApi.getCommitsApi().getCommits("37620666","main",null,null);
+          System.out.println(JSON.toJSONString(a));
+          System.out.println(a.size());
+          for(int i=0;i<a.size();i++) {
+              System.out.println(a.get(i).getLastPipeline());
+          }
+    } catch (GitLabApiException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
-    
-    /**
-     * 场景七：多线程调用
-     * 原因：因为spring的事务是通过数据库连接来实现，而数据库连接spring是放在threalocal里面。
-     * 同一个事务，只能用同一个数据库连接。而多线程场景下，拿到的数据库连接是不一样的，即是属于不同事务
-     * 总结： 自定义事务注解多线程调用事务失效
-     */
-//    @Test
-    public void testMultThread() throws Exception{
-        tranInvalidCaseWithMultThread.save();
+  }
+  
+  //第五步，根据commits的id获取代码量 4
+//  @Test
+  public void commit() {
+      http://gitlab地址/api/v4/projects/项目id/repository/commits/commits的id?private_token=xxx
+      //http://gitlab.com/api/v4/projects/37620666/repository/commits/5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9&private_token=glpat-N3VJDTyNbzqCcuGxVa-m
+      try {
+          GitLabApi gitLabApi = new GitLabApi("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+          Commit a= gitLabApi.getCommitsApi().getCommit("37620666","5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9");
+          System.out.println(JSON.toJSONString(a));
+    } catch (GitLabApiException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
     }
+  }
+  
+//获取提交的差异  5
+//  @Test
+  public void commit2() {
+      //curl --header "PRIVATE-TOKEN: <your_access_token>" "https://gitlab.example.com/api/v4/projects/37620666/repository/commits/master/diff"
+      //http://gitlab.com/api/v4/projects/37620666/repository/commits/main&private_token=glpat-N3VJDTyNbzqCcuGxVa-m
+      //https://gitlab.com/api/v4/projects/37620666/repository/commits/5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9/refs?type=all&private_token=glpat-N3VJDTyNbzqCcuGxVa-m
+      try {
+          GitLabApi gitLabApi = new GitLabApi("https://gitlab.com","glpat-N3VJDTyNbzqCcuGxVa-m");
+          List<Diff> a= gitLabApi.getCommitsApi().getDiff("37620666","5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9");
+          System.out.println(JSON.toJSONString(a));
+    } catch (GitLabApiException e) {
+        // TODO Auto-generated catch block
+        e.printStackTrace();
+    }
+  }
+  
+  
+  
 }

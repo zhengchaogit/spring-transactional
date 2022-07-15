@@ -1,0 +1,20 @@
+{
+	"authorEmail": "545617281@qq.com",
+	"authorName": "zhengchaogit2018",
+	"authoredDate": 1657122070000,
+	"committedDate": 1657122070000,
+	"committerEmail": "545617281@qq.com",
+	"committerName": "zhengchaogit2018",
+	"createdAt": 1657122070000,
+	"id": "5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9",
+	"message": "Initial commit",
+	"parentIds": [],
+	"shortId": "5c19dcd5",
+	"stats": {
+		"additions": 92,
+		"deletions": 0,
+		"total": 92
+	},
+	"title": "Initial commit",
+	"webUrl": "https://gitlab.com/zc_202207062305/test02/-/commit/5c19dcd5f0c3c34f1939f3c51014a6314ba2d9c9"
+}
